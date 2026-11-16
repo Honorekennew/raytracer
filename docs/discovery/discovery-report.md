@@ -14,7 +14,7 @@ The studio needs a ray tracer its own team can maintain and extend, because comm
 >
 > **A:** "The licence is seat-based: we pay per artist, plus every node. On the last project the licence budget reached about two million. We could not afford it, and it still does not cover future shows. We want to spend no more than five hundred thousand euros, in-house."
 
-**My conclusion:** One sentence said "two billion". The later figure, two million, is the one to keep.
+**My conclusion:** One sentence said "two billion". The later figure, two million dollars, is the one to keep. The target budget of five hundred thousand is in euros, so the two amounts are not in the same currency.
 
 ### When people leave
 
@@ -52,7 +52,7 @@ The studio needs a ray tracer its own team can maintain and extend, because comm
 >
 > **A:** "The designer has a powerful desktop and must see a smaller preview quickly. Production runs on a larger machine, with reasonable specs, and must be rendered by the CPU. There is no graphics card. The farm goes up to 100 machines. For the designer, a fast and pretty accurate image matters. In production, high quality matters."
 
-**My conclusion:** No exact model and no RAM figure were captured. Asked how long one frame may take, the client said "I'm not too sure", and only gave the 60-day cap for the whole film, fast previews, and at least ten pre-renders per image.
+**My conclusion:** No exact model and no RAM figure were captured. Asked how long one frame may take, the client said "I'm not too sure", and only gave the 60-day cap for the whole film. The client also asked for fast previews and at least ten pre-renders per image.
 
 ### From the artist to the film
 
@@ -83,8 +83,8 @@ The studio needs a ray tracer its own team can maintain and extend, because comm
 
 | Solution | Maker | Licence | Pricing (16 November 2026) | Capabilities | Sources |
 |---|---|---|---|---|---|
-| Arnold | Autodesk | Commercial, per named user | A reseller lists 430 USD per year. Confirm on the Autodesk page. | Path tracer used in film. CPU and GPU. Often used from Maya. | https://www.autodesk.com/products/arnold/buy |
-| RenderMan | Pixar | Commercial, per licence, floating or node-locked | 595 USD per licence on Pixar's store. A February 2026 article says 845 USD with one year of maintenance. | Production renderer behind Pixar films. | https://renderman.pixar.com/store |
+| Arnold | Autodesk | Commercial, per named user | The Autodesk page does not show the price on 16 November 2026 (it is loaded dynamically). One reseller listing showed 430 USD per year, which Autodesk does not confirm. | Path tracer used in film. CPU and GPU. Often used from Maya. | https://www.autodesk.com/products/arnold/buy |
+| RenderMan | Pixar | Commercial, per licence, floating or node-locked | 595 USD per licence on Pixar's store, plus 250 USD per licence for annual maintenance. That is 845 USD for the first year (our sum). | Production renderer behind Pixar films. | https://renderman.pixar.com/store |
 | Cycles | Blender Foundation | Open source (Apache 2.0) | 0 | Path tracer inside Blender. Free to use in commercial films. | https://www.blender.org/about/license/ |
 
 Commercial renderers already calculate film images. The client already fell back on Maya, and the cost is the problem: one licence per artist and per machine. Free renderers exist, and the client still wants a program its own team and its partner studios can read, change and explain. For this module the first version is only spheres and planes.
