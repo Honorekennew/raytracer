@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest an improvement or a new capability.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the need, not only the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What do you propose?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+  - type: checkboxes
+    id: adr
+    attributes:
+      label: Architecture decisions
+      description: If this changes the build, the tools or the test setup, it needs a new ADR (see CONTRIBUTING.md).
+      options:
+        - label: I read docs/adr/ and this does not go against an accepted ADR.

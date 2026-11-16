@@ -1,0 +1,4 @@
+# Always use LF so files behave the same on Windows, macOS, Linux and in the dev container.
+* text=auto eol=lf
+*.png binary
+*.jpg binary

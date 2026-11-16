@@ -1,0 +1,3 @@
+# Used by clangd in both VS Code and Zed: read compile flags from the debug build.
+CompileFlags:
+  CompilationDatabase: build/debug

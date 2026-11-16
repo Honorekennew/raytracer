@@ -1,0 +1,24 @@
+{
+  "name": "raytracer (C++20)",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "ubuntu",
+  // Lets gdb and the sanitizers work inside the container.
+  "capAdd": ["SYS_PTRACE"],
+  "securityOpt": ["seccomp=unconfined"],
+  "postCreateCommand": "cmake --preset debug",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cmake-tools",
+        "llvm-vs-code-extensions.vscode-clangd"
+      ],
+      "settings": {
+        "cmake.useCMakePresets": "always",
+        "C_Cpp.intelliSenseEngine": "disabled",
+        "editor.formatOnSave": true
+      }
+    }
+  }
+}

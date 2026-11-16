@@ -1,0 +1,34 @@
+name: CI
+
+# Builds the dev container image and runs the tests inside it, the same way a contributor does
+# locally (see CONTRIBUTING.md). "pull_request" is used on purpose: pull requests from forks run
+# without access to any secret.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Build the dev container image
+        run: docker build -t raytracer-dev .devcontainer
+
+      # The container runs with the runner's user id so that it can write to the checkout.
+      - name: Build and run the tests in the dev container
+        run: >
+          docker run --rm
+          --user "$(id -u):$(id -g)"
+          -e HOME=/tmp
+          -v "$PWD:/workspace"
+          -w /workspace
+          raytracer-dev
+          make test

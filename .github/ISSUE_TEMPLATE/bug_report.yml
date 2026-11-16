@@ -1,0 +1,43 @@
+name: Bug report
+description: Something does not build, run or behave as expected.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect to see instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The exact commands you ran, starting from a fresh clone if possible.
+      placeholder: |
+        1. make build
+        2. make run
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The error message or the relevant part of the terminal output.
+      render: shell
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did you build?
+      options:
+        - Dev container (recommended setup)
+        - Native build on Windows
+        - Native build on macOS
+        - Native build on Linux
+    validations:
+      required: true
+  - type: input
+    id: details
+    attributes:
+      label: Operating system and compiler
+      description: For example, "Windows 11, Docker Desktop" or "Ubuntu 24.04, GCC 13".
