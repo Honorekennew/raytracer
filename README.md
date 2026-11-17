@@ -106,19 +106,21 @@ We write the test **before** the code, in short cycles:
 
 ### Adding a test
 
-1. Create `tests/<thing>_test.cpp`:
+1. Create `tests/<concept>/<thing>_test.cpp`, in the folder of the concept being tested (for
+   example `tests/demo/greeting_test.cpp`):
 
    ```cpp
    #include <catch2/catch_test_macros.hpp>
 
-   #include "raytracer/greeting.hpp"
+   #include "raytracer/demo/greeting.hpp"
 
    TEST_CASE("greeting addresses the given name", "[greeting]") {
      REQUIRE(raytracer::greeting("Ada") == "Hello, Ada!");
    }
    ```
 
-2. Add the file to `add_executable(raytracer_tests ...)` in `tests/CMakeLists.txt`.
+2. Add the file to `add_executable(raytracer_tests ...)` in `tests/CMakeLists.txt`
+   (for example `demo/greeting_test.cpp`).
 3. Build, then run the tests:
 
    ```sh
@@ -160,9 +162,9 @@ ctest --preset sanitize
 ```text
 .devcontainer/      Dockerfile and devcontainer.json (the shared environment)
 .github/            CI workflow, pull request template, issue templates
-include/raytracer/  Public headers
-src/                Library (raytracer_core) and the executable (main.cpp)
-tests/              Catch2 tests
+include/raytracer/  Public headers, one folder per concept (math/, demo/)
+src/                Library sources, one folder per concept, and the executable (main.cpp)
+tests/              Catch2 tests, one folder per concept
 docs/adr/           Architecture decision records
 docs/               Other project documents
 CMakeLists.txt      Build definition
@@ -176,7 +178,17 @@ AGENTS.md           Instructions for AI coding agents
 The logic lives in the `raytracer_core` library. `main.cpp` stays thin, so tests can exercise
 everything without running the program.
 
-To format code: `clang-format -i src/*.cpp include/raytracer/*.hpp tests/*.cpp`.
+Files are grouped by concept, and the three trees mirror each other. For example, the `Vector`
+class is in `include/raytracer/math/vector.hpp`, `src/math/vector.cpp` and
+`tests/math/vector_test.cpp`, and is included with `#include "raytracer/math/vector.hpp"`.
+To add a concept, create the matching folder in each tree and list the new files in
+`src/CMakeLists.txt` and `tests/CMakeLists.txt`.
+
+To format code (in the dev container):
+
+```sh
+find src include tests \( -name '*.cpp' -o -name '*.hpp' \) | xargs clang-format -i
+```
 
 ## Contributing
 

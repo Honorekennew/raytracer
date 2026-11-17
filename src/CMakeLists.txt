@@ -1,6 +1,8 @@
 # The library holds all the logic so that both the executable and the tests can use it.
+# Sources are grouped by concept: one folder per concept (math/, demo/, ...).
 add_library(raytracer_core
-  greeting.cpp)
+  demo/greeting.cpp
+  math/vector.cpp)
 add_library(raytracer::core ALIAS raytracer_core)
 
 target_include_directories(raytracer_core PUBLIC

@@ -50,9 +50,9 @@ We work in short cycles:
 3. **Refactor**: clean up while the tests stay green.
 
 Tests use [Catch2](https://github.com/catchorg/Catch2) and live in `tests/`. To add one, create
-`tests/<thing>_test.cpp`, add the file to `add_executable(raytracer_tests ...)` in
-`tests/CMakeLists.txt`, then run `make test`. The README explains this step by step, with an
-example.
+`tests/<concept>/<thing>_test.cpp` (for example `tests/math/vector_test.cpp`), add the file to
+`add_executable(raytracer_tests ...)` in `tests/CMakeLists.txt`, then run `make test`. The README
+explains this step by step, with an example.
 
 A change that adds behaviour should come with the tests that describe it. Before opening a pull
 request, run `make test PRESET=sanitize` as well, to catch memory errors and undefined behaviour.

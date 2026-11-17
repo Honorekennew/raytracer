@@ -1,4 +1,4 @@
-#include "raytracer/greeting.hpp"
+#include "raytracer/demo/greeting.hpp"
 
 namespace raytracer {
 

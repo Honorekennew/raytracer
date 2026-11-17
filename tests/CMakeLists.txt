@@ -16,9 +16,10 @@ if(Catch2_SOURCE_DIR)
 endif()
 include(Catch)
 
-# Add new test files to this list.
+# Add new test files to this list. Tests are grouped by concept, like the sources in src/.
 add_executable(raytracer_tests
-  greeting_test.cpp)
+  demo/greeting_test.cpp
+  math/vector_test.cpp)
 target_link_libraries(raytracer_tests PRIVATE
   raytracer::core
   raytracer_options

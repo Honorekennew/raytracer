@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "raytracer/greeting.hpp"
+#include "raytracer/demo/greeting.hpp"
 
 TEST_CASE("greeting addresses the given name", "[greeting]") {
   REQUIRE(raytracer::greeting("World") == "Hello, World!");

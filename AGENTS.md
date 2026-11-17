@@ -25,6 +25,13 @@ make clean                # delete build/
 make test PRESET=sanitize # use another preset (default: debug)
 ```
 
+## Code style
+
+- Private variables (data members) start with `_` followed by a lowercase letter: `_x`, `_count`.
+  Never use `_` followed by an uppercase letter, or a double underscore (`__`): C++ reserves them.
+- Do not use a `get` prefix for accessors, it is redundant. Name the function after the value:
+  `x()`, not `getX()`.
+
 ## Contributing and CI
 
 `CONTRIBUTING.md` describes the workflow for contributors (dev container, `make` commands,
