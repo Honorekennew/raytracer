@@ -26,6 +26,10 @@ class Vector {
   // Usage: Vector v3 = v1 - v2;
   Vector operator-(const Vector& other) const;
 
+  // Returns the dot product of this vector and "other":
+  // x * other.x + y * other.y + z * other.z.
+  double dot(const Vector& other) const;
+
   // Read-only access to the components. They let you read a value but not change it.
   double x() const;
   double y() const;

@@ -2,6 +2,8 @@
 # Sources are grouped by concept: one folder per concept (math/, demo/, ...).
 add_library(raytracer_core
   demo/greeting.cpp
+  math/ray.cpp
+  math/sphere.cpp
   math/vector.cpp)
 add_library(raytracer::core ALIAS raytracer_core)
 
