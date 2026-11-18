@@ -18,10 +18,21 @@ include(Catch)
 
 # Add new test files to this list. Tests are grouped by concept, like the sources in src/.
 add_executable(raytracer_tests
-  demo/greeting_test.cpp
-  math/vector_test.cpp)
+  test_helpers.cpp
+  colour/colour_test.cpp
+  geometry/ray_test.cpp
+  geometry/sphere_test.cpp
+  io/png_saver_test.cpp
+  math/vector_test.cpp
+  render/camera_test.cpp
+  render/image_test.cpp
+  sanity_test.cpp)
+# Lets every test file write #include "test_helpers.hpp".
+target_include_directories(raytracer_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# lodepng: the PngSaver tests read the PNG file back with LodePNG's decoder.
 target_link_libraries(raytracer_tests PRIVATE
   raytracer::core
+  lodepng::lodepng
   raytracer_options
   Catch2::Catch2WithMain)
 

@@ -1,4 +1,4 @@
-#include "raytracer/math/ray.hpp"
+#include "raytracer/geometry/ray.hpp"
 
 namespace raytracer {
 

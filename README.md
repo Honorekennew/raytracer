@@ -57,13 +57,12 @@ The container uses `bash`, so `&&` works there. If you build natively on Windows
 Windows PowerShell 5.1, run each command on its own line instead, since that version does not
 support `&&`.
 
-### 2. Build and run the Hello World demo
+### 2. Build and run the program
 
 ```sh
 cmake --preset debug             # configure (once, or when CMake files change)
 cmake --build --preset debug     # compile
-./build/debug/src/raytracer      # prints: Hello, World!
-./build/debug/src/raytracer Ada  # prints: Hello, Ada!
+./build/debug/src/raytracer      # prints: Hello, Raytracer! and Colour: (1, 0, 0)
 ```
 
 ### 3. Run the tests
@@ -107,20 +106,24 @@ We write the test **before** the code, in short cycles:
 ### Adding a test
 
 1. Create `tests/<concept>/<thing>_test.cpp`, in the folder of the concept being tested (for
-   example `tests/demo/greeting_test.cpp`):
+   example `tests/math/vector_test.cpp`):
 
    ```cpp
    #include <catch2/catch_test_macros.hpp>
 
-   #include "raytracer/demo/greeting.hpp"
+   #include "raytracer/math/vector.hpp"
+   #include "test_helpers.hpp"
 
-   TEST_CASE("greeting addresses the given name", "[greeting]") {
-     REQUIRE(raytracer::greeting("Ada") == "Hello, Ada!");
+   TEST_CASE("Vector add", "[vector]") {
+     raytracer::Vector a(1, 2, 3);
+     raytracer::Vector b(4, 5, 6);
+
+     requireVectorsEqual(a + b, raytracer::Vector(5, 7, 9));
    }
    ```
 
 2. Add the file to `add_executable(raytracer_tests ...)` in `tests/CMakeLists.txt`
-   (for example `demo/greeting_test.cpp`).
+   (for example `math/vector_test.cpp`).
 3. Build, then run the tests:
 
    ```sh
@@ -135,8 +138,8 @@ Floating point comparisons (which a ray tracer will need) use `Catch::Approx`
 ### Useful commands
 
 ```sh
-ctest --preset debug -R greeting          # run tests whose name matches "greeting"
-./build/debug/tests/raytracer_tests "[greeting]"   # run by tag, with Catch2's own output
+ctest --preset debug -R Vector            # run tests whose name matches "Vector"
+./build/debug/tests/raytracer_tests "[vector]"     # run by tag, with Catch2's own output
 ./build/debug/tests/raytracer_tests --list-tests   # list all tests
 ctest --preset sanitize                   # tests with AddressSanitizer + UBSan (after configuring it)
 ```
@@ -162,7 +165,7 @@ ctest --preset sanitize
 ```text
 .devcontainer/      Dockerfile and devcontainer.json (the shared environment)
 .github/            CI workflow, pull request template, issue templates
-include/raytracer/  Public headers, one folder per concept (math/, demo/)
+include/raytracer/  Public headers, one folder per concept (colour/, geometry/, io/, math/, render/)
 src/                Library sources, one folder per concept, and the executable (main.cpp)
 tests/              Catch2 tests, one folder per concept
 docs/adr/           Architecture decision records

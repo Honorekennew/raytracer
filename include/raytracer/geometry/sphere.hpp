@@ -1,6 +1,6 @@
 #pragma once
 
-#include "raytracer/math/ray.hpp"
+#include "raytracer/geometry/ray.hpp"
 #include "raytracer/math/vector.hpp"
 
 namespace raytracer {
@@ -15,8 +15,9 @@ class Sphere {
   const Vector& center() const;
   double radius() const;
 
-  // Returns true if the ray touches the sphere.
-  // Only the part of the line in front of the ray's origin counts (t >= 0).
+  // Returns true if the ray hits the sphere.
+  // Only the part of the line in front of the ray's origin counts (t > 0): a sphere behind
+  // the origin is not hit.
   bool hit(const Ray& ray) const;
 
  private:

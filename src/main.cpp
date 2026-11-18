@@ -1,34 +1,44 @@
+#include <exception>
 #include <iostream>
 
-#include "raytracer/demo/greeting.hpp"
-#include "raytracer/math/ray.hpp"
-#include "raytracer/math/sphere.hpp"
+#include "raytracer/colour/colour.hpp"
+#include "raytracer/geometry/ray.hpp"
+#include "raytracer/geometry/sphere.hpp"
+#include "raytracer/io/png_saver.hpp"
 #include "raytracer/math/vector.hpp"
+#include "raytracer/render/camera.hpp"
+#include "raytracer/render/image.hpp"
 
-int main(int argc, char* argv[]) {
-  const char* name = (argc > 1) ? argv[1] : "World";
-  std::cout << raytracer::greeting(name) << '\n';
+int main() {
+  std::cout << "Hello, Raytracer!\n";
 
-  // Quick manual test of the vector operators.
-  raytracer::Vector v1(1.0, 2.0, 3.0);
-  raytracer::Vector v2(4.0, 5.0, 6.0);
-  raytracer::Vector v3 = v1 + v2;
-  raytracer::Vector v4 = v1 - v2;
-
-  std::cout << "v1 + v2 = (" << v3.x() << ", " << v3.y() << ", " << v3.z() << ")\n";
-  std::cout << "v1 - v2 = (" << v4.x() << ", " << v4.y() << ", " << v4.z() << ")\n";
-
-  // 1st parameter = O (origin), 2nd = D (direction)
-  raytracer::Ray ray(raytracer::Vector(0, 0, -1), raytracer::Vector(0, 0, 1));
+  raytracer::Camera camera(raytracer::Vector(0, 0, -1));
+  raytracer::Ray ray = camera.rayThroughCenter();
 
   // Sphere: center and radius
   raytracer::Sphere sphere(raytracer::Vector(0, 0, 9), 5);
 
+  // Black by default, red if the ray hits the sphere.
+  raytracer::Colour colour(0, 0, 0);
   bool hit = sphere.hit(ray);
   if (hit) {
-    std::cout << "Ray hit the sphere!\n";
-  } else {
-    std::cout << "Ray missed the sphere.\n";
+    colour = raytracer::Colour(1, 0, 0);
+  }
+
+  std::cout << "Colour: (" << colour.r() << ", " << colour.g() << ", " << colour.b() << ")\n";
+
+  // An 800 x 600 image, with the pixel at its centre set to the colour we just computed.
+  raytracer::Image image(800, 600);
+  image.setPixel(400, 300, colour);
+
+  // Save the image as a PNG, in the folder where the program is started.
+  try {
+    raytracer::PngSaver saver;
+    saver.save(image, "output.png");
+    std::cout << "Saved output.png\n";
+  } catch (const std::exception& error) {
+    std::cerr << "Error: " << error.what() << '\n';
+    return 1;
   }
 
   return 0;

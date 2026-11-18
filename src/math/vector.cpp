@@ -1,5 +1,7 @@
 #include "raytracer/math/vector.hpp"
 
+#include <cmath>
+
 namespace raytracer {
 
 // The part after the ":" gives the starting value of each component.
@@ -20,6 +22,16 @@ Vector Vector::operator-(const Vector& other) const {
 double Vector::dot(const Vector& other) const {
   return _x * other._x + _y * other._y + _z * other._z;
 }
+
+Vector Vector::operator*(double scalar) const {
+  return Vector(_x * scalar, _y * scalar, _z * scalar);
+}
+
+double Vector::length() const { return std::sqrt(dot(*this)); }
+
+Vector Vector::normalised() const { return *this * (1.0 / length()); }
+
+Vector operator*(double scalar, const Vector& vector) { return vector * scalar; }
 
 double Vector::x() const { return _x; }
 

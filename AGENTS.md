@@ -9,7 +9,7 @@ Run these inside the dev container (see `README.md`). The shell there is bash.
 ```sh
 cmake --preset debug             # configure
 cmake --build --preset debug     # build
-./build/debug/src/raytracer      # run (prints "Hello, World!")
+./build/debug/src/raytracer      # run (prints "Hello, Raytracer!")
 ctest --preset debug             # run the tests
 ```
 

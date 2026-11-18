@@ -30,6 +30,17 @@ class Vector {
   // x * other.x + y * other.y + z * other.z.
   double dot(const Vector& other) const;
 
+  // Returns a new vector with each component multiplied by "scalar".
+  // Usage: Vector v2 = v1 * 2.0;   (the other order, 2.0 * v1, is declared below the class)
+  Vector operator*(double scalar) const;
+
+  // Returns the length of the vector: the square root of x*x + y*y + z*z.
+  double length() const;
+
+  // Returns a new vector that points the same way and has length 1.
+  // The vector must not be (0, 0, 0): its length is 0, and we can't divide by 0.
+  Vector normalised() const;
+
   // Read-only access to the components. They let you read a value but not change it.
   double x() const;
   double y() const;
@@ -42,5 +53,9 @@ class Vector {
   double _y;
   double _z;
 };
+
+// The same multiplication with the number first: Vector v2 = 2.0 * v1;
+// It is not a member of the class: a member function always has the vector on its left.
+Vector operator*(double scalar, const Vector& vector);
 
 }  // namespace raytracer

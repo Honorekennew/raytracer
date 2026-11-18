@@ -3,6 +3,9 @@
 /out/
 /CMakeUserPresets.json
 
+# Image written by the program
+/output.png
+
 # Editors and tools
 .vs/
 .idea/
