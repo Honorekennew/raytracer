@@ -27,7 +27,7 @@ without an editor integration, with plain `docker build` and `docker run` (see t
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 

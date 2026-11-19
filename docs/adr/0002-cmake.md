@@ -24,7 +24,7 @@ We use CTest, which is bundled with CMake, as the single way to run tests (`ctes
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 
