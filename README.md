@@ -62,7 +62,7 @@ support `&&`.
 ```sh
 cmake --preset debug             # configure (once, or when CMake files change)
 cmake --build --preset debug     # compile
-./build/debug/src/raytracer      # prints: Hello, Raytracer! and Colour: (1, 0, 0)
+./build/debug/src/raytracer      # prints nothing, writes output.png
 ```
 
 ### 3. Run the tests
@@ -165,7 +165,7 @@ ctest --preset sanitize
 ```text
 .devcontainer/      Dockerfile and devcontainer.json (the shared environment)
 .github/            CI workflow, pull request template, issue templates
-include/raytracer/  Public headers, one folder per concept (colour/, geometry/, io/, math/, render/)
+include/raytracer/  Public headers, one folder per concept (colour/, geometry/, io/, light/, material/, math/, render/)
 src/                Library sources, one folder per concept, and the executable (main.cpp)
 tests/              Catch2 tests, one folder per concept
 docs/adr/           Architecture decision records

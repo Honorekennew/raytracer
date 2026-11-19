@@ -1,51 +1,51 @@
 #include <exception>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #include "raytracer/colour/colour.hpp"
-#include "raytracer/geometry/ray.hpp"
 #include "raytracer/geometry/sphere.hpp"
 #include "raytracer/io/png_saver.hpp"
+#include "raytracer/light/light.hpp"
+#include "raytracer/material/lambert_shader.hpp"
 #include "raytracer/math/vector.hpp"
 #include "raytracer/render/camera.hpp"
 #include "raytracer/render/image.hpp"
 
-int main() {
-  std::cout << "Hello, Raytracer!\n";
+namespace {
 
-  // The screen is 2 units wide, so the camera sees 90 degrees from left to right.
-  raytracer::Camera camera(raytracer::Vector(0, 0, -1), 2);
-
-  // Sphere: center and radius
-  raytracer::Sphere sphere(raytracer::Vector(0, 0, 9), 5);
-
-  // An 800 x 600 image. For each pixel, we send a ray through it: the pixel is red if the ray
-  // hits the sphere, and black otherwise.
-  const unsigned int width = 800;
-  const unsigned int height = 600;
-  raytracer::Image image(width, height);
-  const raytracer::Colour red(1, 0, 0);
-  for (unsigned int row = 0; row < height; ++row) {
-    for (unsigned int column = 0; column < width; ++column) {
-      raytracer::Ray ray = camera.rayThroughPixel(column, row, width, height);
-      if (sphere.hit(ray)) {
-        image.setPixel(column, row, red);
-      }
-    }
-  }
-
-  // The colour of the pixel in the middle of the image.
-  const raytracer::Colour& centre = image.pixel(width / 2, height / 2);
-  std::cout << "Colour: (" << centre.r() << ", " << centre.g() << ", " << centre.b() << ")\n";
-
-  // Save the image as a PNG, in the folder where the program is started.
+// Saves the image as a PNG, in the folder where the program is started.
+bool save(const raytracer::Image& image, const std::string& path) {
   try {
     raytracer::PngSaver saver;
-    saver.save(image, "output.png");
-    std::cout << "Saved output.png\n";
+    saver.save(image, path);
+    return true;
   } catch (const std::exception& error) {
     std::cerr << "Error: " << error.what() << '\n';
-    return 1;
+    return false;
   }
+}
 
-  return 0;
+}  // namespace
+
+int main() {
+  // Position and configure the camera. The screen is 2 units wide: the view is 90 degrees wide.
+  raytracer::Camera camera(raytracer::Vector(0, 0, -1), 2);
+
+  // Describe the scene: a yellow sphere with Lambert shading, and a white light above it, on the
+  // left and in front of it (towards the camera).
+  auto yellow = std::make_shared<raytracer::LambertShader>(raytracer::Colour(1, 1, 0));
+  raytracer::Sphere sphere(raytracer::Vector(0, 0, 9), 5, yellow);
+  raytracer::Light light(raytracer::Vector(-10, 10, -10), raytracer::Colour(1, 1, 1));
+
+  // Setup memory buffer for the final image
+  const unsigned int imageWidth = 512;
+  const unsigned int imageHeight = 512;
+  raytracer::Image image(imageWidth, imageHeight);
+
+  // Render the scene into the image
+  camera.render(sphere, light, image);
+
+  // Save the rendered image to a file
+  return save(image, "output.png") ? 0 : 1;
 }

@@ -20,9 +20,13 @@ include(Catch)
 add_executable(raytracer_tests
   test_helpers.cpp
   colour/colour_test.cpp
+  geometry/hit_info_test.cpp
   geometry/ray_test.cpp
   geometry/sphere_test.cpp
   io/png_saver_test.cpp
+  light/light_test.cpp
+  material/flat_shader_test.cpp
+  material/lambert_shader_test.cpp
   math/vector_test.cpp
   render/camera_test.cpp
   render/image_test.cpp

@@ -1,5 +1,7 @@
 #include "raytracer/render/camera.hpp"
 
+#include <optional>
+
 namespace raytracer {
 
 Camera::Camera(const Vector& position, double screenWidth)
@@ -28,6 +30,23 @@ Ray Camera::rayThroughPixel(unsigned int column, unsigned int row, unsigned int 
   Vector pixelPosition(x, y, 0);
   Vector direction = pixelPosition - _position;
   return Ray(_position, direction);
+}
+
+void Camera::render(const Sphere& sphere, const Light& light, Image& image) const {
+  for (unsigned int row = 0; row < image.height(); ++row) {
+    for (unsigned int column = 0; column < image.width(); ++column) {
+      Ray ray = rayThroughPixel(column, row, image.width(), image.height());
+      image.setPixel(column, row, trace(ray, sphere, light));
+    }
+  }
+}
+
+Colour Camera::trace(const Ray& ray, const Sphere& sphere, const Light& light) const {
+  std::optional<HitInfo> hit = sphere.hit(ray);
+  if (!hit.has_value()) {
+    return Colour(0, 0, 0);
+  }
+  return sphere.material().shade(ray, *hit, light);
 }
 
 }  // namespace raytracer

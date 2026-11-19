@@ -1,7 +1,11 @@
 #pragma once
 
+#include "raytracer/colour/colour.hpp"
 #include "raytracer/geometry/ray.hpp"
+#include "raytracer/geometry/sphere.hpp"
+#include "raytracer/light/light.hpp"
 #include "raytracer/math/vector.hpp"
+#include "raytracer/render/image.hpp"
 
 namespace raytracer {
 
@@ -40,7 +44,16 @@ class Camera {
   Ray rayThroughPixel(unsigned int column, unsigned int row, unsigned int imageWidth,
                       unsigned int imageHeight) const;
 
+  // Paints the whole "image": for each pixel, a ray goes through it. If the ray hits the "sphere",
+  // the pixel gets the colour given by the material of the sphere, which is lit by the "light".
+  // If it does not, the pixel is black. Every pixel is written.
+  void render(const Sphere& sphere, const Light& light, Image& image) const;
+
  private:
+  // Follows one ray and returns the colour it sees: the one given by the material of the sphere
+  // if the ray hits it, black if it does not.
+  Colour trace(const Ray& ray, const Sphere& sphere, const Light& light) const;
+
   Vector _position;
   double _screenWidth;
 };

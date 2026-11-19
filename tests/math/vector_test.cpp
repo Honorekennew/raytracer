@@ -57,6 +57,14 @@ TEST_CASE("Vector normalised", "[vector]") {
   REQUIRE_THAT(normalised.length(), WithinAbs(1.0, tolerance));
 }
 
+// (3, 4, 0) has length 5, so its normalised vector is (3/5, 4/5, 0) = (0.6, 0.8, 0).
+TEST_CASE("Vector normalised of (3, 4, 0) is (3/5, 4/5, 0)", "[vector]") {
+  Vector normalised = Vector(3, 4, 0).normalised();
+
+  requireVectorsEqual(normalised, Vector(3.0 / 5, 4.0 / 5, 0));
+  REQUIRE_THAT(normalised.length(), WithinAbs(1.0, tolerance));
+}
+
 // A point of a ray is O + t * D. With O = (0, 0, -1) and D = (0, 0, 1):
 // t = 5 gives (0, 0, 4), the front of our sphere, and t = 15 gives (0, 0, 14), the back.
 TEST_CASE("Ray equation O + t * D", "[ray]") {
