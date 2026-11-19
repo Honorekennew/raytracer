@@ -16,8 +16,9 @@ namespace raytracer {
 class Scene {
  public:
   // Creates a scene with no shapes, lit by a sun in the direction "toLight": the direction that
-  // goes from a point of the scene towards the sun. The scene keeps it as it is, it does not
-  // change its length.
+  // goes from a point of the scene towards the sun. The scene makes it 1 long, like Plane does
+  // with its normal: toLight() always gives a unit vector. Only (0, 0, 0), which has no direction,
+  // is kept as it is.
   explicit Scene(const Vector& toLight);
 
   // Read-only access to the direction towards the sun.

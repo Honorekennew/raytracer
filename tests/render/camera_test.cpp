@@ -300,6 +300,39 @@ TEST_CASE("Camera render shows a plane behind the sphere", "[camera]") {
   }
 }
 
+// A 5 x 3 image on a screen 5 wide: a pixel is 1 across. The sun is behind the camera
+// (toLight = (0, 0, -1)) and the red sphere has the centre (0, 0, 6) and the radius 5. Only the
+// pixels of a plus hit it:
+//   - the middle pixel, (0, 0, 1) from (0, 0, -1): t = 2, the point is (0, 0, 1), the normal is
+//     (0, 0, -1), and N . L = 1: the full red;
+//   - its four neighbours, for example (1, 0, 1): t = 3, the point is (3, 0, 2), the normal is
+//     (3, 0, -4) / 5, and N . L = 0.8 (the 3-4-5 triangle);
+//   - the ten others miss the sphere: black.
+TEST_CASE("Camera render shades a plus on a 5 x 3 image", "[camera]") {
+  Camera camera(Vector(0, 0, -1), 5);
+  Scene scene = sceneOf(Vector(0, 0, -1), Sphere(Vector(0, 0, 6), 5,
+                        std::make_shared<LambertShader>(Colour(1, 0, 0))));
+
+  Image image = camera.render(scene, 5, 3);
+
+  REQUIRE(image.width() == 5);
+  REQUIRE(image.height() == 3);
+  const char* expected[3] = {
+      "..#..",
+      ".#O#.",
+      "..#..",
+  };
+  for (unsigned int row = 0; row < 3; ++row) {
+    for (unsigned int column = 0; column < 5; ++column) {
+      char symbol = expected[row][column];
+      Colour colour = symbol == 'O' ? Colour(1, 0, 0)
+                      : symbol == '#' ? Colour(0.8, 0, 0)
+                                      : Colour(0, 0, 0);
+      requireColoursEqual(image.pixel(column, row), colour);
+    }
+  }
+}
+
 // The top right pixel of a 512 x 256 image on a screen 2 wide: a pixel is 2 / 512 = 1 / 256 wide.
 //   x = (511.5 - 256) / 256 = 511 / 512      y = -(0.5 - 128) / 256 = 255 / 512
 TEST_CASE("Ray through the top right pixel of a 512 x 256 image", "[camera]") {

@@ -50,10 +50,20 @@ Colour colourOf(const Hit& hit) {
 
 }  // namespace
 
-TEST_CASE("Scene keeps the direction towards the sun", "[scene]") {
-  Scene scene(Vector(1, 2, 3));
+// The scene gives the direction towards the sun with length 1: (0, 3, -4) is 5 long, so it
+// becomes (0, 3, -4) / 5 = (0, 0.6, -0.8).
+TEST_CASE("Scene keeps the direction towards the sun as a unit vector", "[scene]") {
+  Scene scene(Vector(0, 3, -4));
 
-  requireVectorsEqual(scene.toLight(), Vector(1, 2, 3));
+  requireVectorsEqual(scene.toLight(), Vector(0, 0.6, -0.8));
+}
+
+// (0, 0, 0) has no direction: it can't be made 1 long, so the scene keeps it. It must not become
+// "not a number".
+TEST_CASE("Scene keeps a sun with no direction as it is", "[scene]") {
+  Scene scene(Vector(0, 0, 0));
+
+  requireVectorsEqual(scene.toLight(), Vector(0, 0, 0));
 }
 
 // The ray (0, 0, -1) + t * (0, 0, 1) meets two shapes:

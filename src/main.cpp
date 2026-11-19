@@ -34,8 +34,8 @@ int main() {
   raytracer::Camera camera(raytracer::Vector(0, 0, -1), 2);
 
   // Describe the scene. The sun is above, on the left and in front (towards the camera): toLight
-  // is the direction from a point of the scene towards it, 1 long.
-  raytracer::Scene scene(raytracer::Vector(-1, 1, -1).normalised());
+  // is the direction from a point of the scene towards it. The scene makes it 1 long.
+  raytracer::Scene scene(raytracer::Vector(-1, 1, -1));
 
   // A red sphere with Lambert shading...
   auto red = std::make_shared<raytracer::LambertShader>(raytracer::Colour(1, 0, 0));

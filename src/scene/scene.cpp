@@ -4,7 +4,20 @@
 
 namespace raytracer {
 
-Scene::Scene(const Vector& toLight) : _toLight(toLight) {}
+namespace {
+
+// The direction with length 1. A vector of length 0 has no direction and can't be divided by its
+// length: it is kept as it is.
+Vector unitOrZero(const Vector& direction) {
+  if (direction.length() == 0.0) {
+    return direction;
+  }
+  return direction.normalised();
+}
+
+}  // namespace
+
+Scene::Scene(const Vector& toLight) : _toLight(unitOrZero(toLight)) {}
 
 const Vector& Scene::toLight() const { return _toLight; }
 
