@@ -42,7 +42,7 @@ void Camera::render(const Sphere& sphere, const Light& light, Image& image) cons
 }
 
 Colour Camera::trace(const Ray& ray, const Sphere& sphere, const Light& light) const {
-  std::optional<HitInfo> hit = sphere.hit(ray);
+  std::optional<Hit> hit = sphere.hit(ray);
   if (!hit.has_value()) {
     return Colour(0, 0, 0);
   }

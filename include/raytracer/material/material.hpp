@@ -1,7 +1,7 @@
 #pragma once
 
 #include "raytracer/colour/colour.hpp"
-#include "raytracer/geometry/hit_info.hpp"
+#include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/light/light.hpp"
 
@@ -26,7 +26,7 @@ class Material {
   // FlatShader uses none of the parameters, a LambertShader uses the hit and the light.
   //
   // All the parameters are "const &": a material reads them, it never changes them.
-  virtual Colour shade(const Ray& ray, const HitInfo& hit, const Light& light) const = 0;
+  virtual Colour shade(const Ray& ray, const Hit& hit, const Light& light) const = 0;
 };
 
 }  // namespace raytracer

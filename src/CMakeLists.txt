@@ -21,7 +21,8 @@ target_include_directories(lodepng SYSTEM PUBLIC ${lodepng_SOURCE_DIR})
 # material/, math/, render/).
 add_library(raytracer_core
   colour/colour.cpp
-  geometry/hit_info.cpp
+  geometry/hit.cpp
+  geometry/plane.cpp
   geometry/ray.cpp
   geometry/sphere.cpp
   io/png_saver.cpp

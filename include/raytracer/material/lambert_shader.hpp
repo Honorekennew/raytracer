@@ -1,7 +1,7 @@
 #pragma once
 
 #include "raytracer/colour/colour.hpp"
-#include "raytracer/geometry/hit_info.hpp"
+#include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/light/light.hpp"
 #include "raytracer/material/material.hpp"
@@ -21,7 +21,7 @@ class LambertShader : public Material {
   // Returns the colour of the surface multiplied by the colour of the light and by the
   // brightness. The brightness is never below 0: a surface turned away from the light is black,
   // not "darker than black". The ray is not used.
-  Colour shade(const Ray& ray, const HitInfo& hit, const Light& light) const override;
+  Colour shade(const Ray& ray, const Hit& hit, const Light& light) const override;
 
  private:
   Colour _colour;

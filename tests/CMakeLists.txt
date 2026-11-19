@@ -20,7 +20,8 @@ include(Catch)
 add_executable(raytracer_tests
   test_helpers.cpp
   colour/colour_test.cpp
-  geometry/hit_info_test.cpp
+  geometry/hit_test.cpp
+  geometry/plane_test.cpp
   geometry/ray_test.cpp
   geometry/sphere_test.cpp
   io/png_saver_test.cpp

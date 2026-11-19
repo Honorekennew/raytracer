@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "raytracer/colour/colour.hpp"
-#include "raytracer/geometry/hit_info.hpp"
+#include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/light/light.hpp"
 #include "raytracer/material/lambert_shader.hpp"
@@ -10,7 +10,7 @@
 #include "test_helpers.hpp"
 
 using raytracer::Colour;
-using raytracer::HitInfo;
+using raytracer::Hit;
 using raytracer::LambertShader;
 using raytracer::Light;
 using raytracer::Material;
@@ -24,7 +24,7 @@ using raytracer::Vector;
 namespace {
 
 const Ray anyRay(Vector(0, 0, 10), Vector(0, 0, -1));
-const HitInfo faceUp(Vector(0, 0, 0), Vector(0, 0, 1));
+const Hit faceUp(Vector(0, 0, 0), Vector(0, 0, 1));
 const Colour white(1, 1, 1);
 
 }  // namespace
@@ -80,7 +80,7 @@ TEST_CASE("LambertShader gives black when the light is behind the surface", "[ma
 // from the origin, the light would be above.)
 TEST_CASE("LambertShader looks at the light from the hit point", "[material]") {
   LambertShader shader(Colour(1, 1, 0));
-  HitInfo high(Vector(0, 0, 10), Vector(0, 0, 1));
+  Hit high(Vector(0, 0, 10), Vector(0, 0, 1));
   Light light(Vector(0, 0, 5), white);
 
   requireColoursEqual(shader.shade(anyRay, high, light), Colour(0, 0, 0));

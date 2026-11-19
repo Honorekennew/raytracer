@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "raytracer/colour/colour.hpp"
-#include "raytracer/geometry/hit_info.hpp"
+#include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/light/light.hpp"
 #include "raytracer/material/flat_shader.hpp"
@@ -11,7 +11,7 @@
 
 using raytracer::Colour;
 using raytracer::FlatShader;
-using raytracer::HitInfo;
+using raytracer::Hit;
 using raytracer::Light;
 using raytracer::Material;
 using raytracer::Ray;
@@ -21,7 +21,7 @@ namespace {
 
 // A ray that hits the point (0, 0, 4) of a sphere, whose normal there is (0, 0, -1).
 const Ray straightRay(Vector(0, 0, -1), Vector(0, 0, 1));
-const HitInfo straightHit(Vector(0, 0, 4), Vector(0, 0, -1));
+const Hit straightHit(Vector(0, 0, 4), Vector(0, 0, -1));
 const Light whiteLight(Vector(0, 0, -5), Colour(1, 1, 1));
 
 }  // namespace
@@ -37,7 +37,7 @@ TEST_CASE("FlatShader shades with the colour it was created with", "[material]")
 TEST_CASE("FlatShader gives the same colour wherever the light is", "[material]") {
   FlatShader shader(Colour(0.25, 0.5, 0.75));
   Ray sideways(Vector(3, -2, 5), Vector(1, 1, 0));
-  HitInfo otherHit(Vector(4, -1, 5), Vector(0, 1, 0));
+  Hit otherHit(Vector(4, -1, 5), Vector(0, 1, 0));
   Light redLight(Vector(100, 100, 100), Colour(1, 0, 0));
 
   requireColoursEqual(shader.shade(straightRay, straightHit, whiteLight), Colour(0.25, 0.5, 0.75));

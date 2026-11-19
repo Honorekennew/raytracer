@@ -3,8 +3,9 @@
 #include <memory>
 #include <optional>
 
-#include "raytracer/geometry/hit_info.hpp"
+#include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
+#include "raytracer/geometry/shape.hpp"
 #include "raytracer/material/material.hpp"
 #include "raytracer/math/vector.hpp"
 
@@ -12,7 +13,7 @@ namespace raytracer {
 
 // A sphere: all the points at a distance "radius" from a point, the center.
 // It has a material, which decides the colour of the pixels that show it.
-class Sphere {
+class Sphere : public Shape {
  public:
   // Creates a sphere with the given center, radius and material.
   //
@@ -34,8 +35,10 @@ class Sphere {
   // the origin is not hit. If the ray hits the sphere twice, the first hit is returned.
   //
   // "std::optional" is a value that may be empty: use "has_value()", or test it like a bool, to
-  // know if there is a hit, and "*hit" or "hit->" to reach the HitInfo.
-  std::optional<HitInfo> hit(const Ray& ray) const;
+  // know if there is a hit, and "*hit" or "hit->" to reach the Hit.
+  //
+  // "override" asks the compiler to check that this really replaces the function of Shape.
+  std::optional<Hit> hit(const Ray& ray) const override;
 
  private:
   // The "t" of the first hit in front of the ray's origin (the point is origin + t * direction),

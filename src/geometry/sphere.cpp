@@ -54,7 +54,7 @@ std::optional<double> Sphere::distanceToHit(const Ray& ray) const {
   return std::nullopt;
 }
 
-std::optional<HitInfo> Sphere::hit(const Ray& ray) const {
+std::optional<Hit> Sphere::hit(const Ray& ray) const {
   std::optional<double> t = distanceToHit(ray);
   if (!t.has_value()) {
     return std::nullopt;
@@ -63,7 +63,7 @@ std::optional<HitInfo> Sphere::hit(const Ray& ray) const {
   // The point of the ray at "t", and the normal: from the center to that point, made 1 long.
   Vector point = ray.origin() + *t * ray.direction();
   Vector normal = (point - _center).normalised();
-  return HitInfo(point, normal);
+  return Hit(point, normal);
 }
 
 }  // namespace raytracer

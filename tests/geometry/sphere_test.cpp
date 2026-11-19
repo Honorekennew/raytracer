@@ -4,7 +4,7 @@
 #include <stdexcept>
 
 #include "raytracer/colour/colour.hpp"
-#include "raytracer/geometry/hit_info.hpp"
+#include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/geometry/sphere.hpp"
 #include "raytracer/light/light.hpp"
@@ -14,7 +14,7 @@
 
 using raytracer::Colour;
 using raytracer::FlatShader;
-using raytracer::HitInfo;
+using raytracer::Hit;
 using raytracer::Light;
 using raytracer::Ray;
 using raytracer::Sphere;
@@ -91,7 +91,7 @@ TEST_CASE("Two spheres can share the same material", "[sphere]") {
   Sphere second(Vector(10, 0, 9), 1, yellow);
   Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
   Light light(Vector(0, 0, -5), Colour(1, 1, 1));
-  HitInfo hit(Vector(0, 0, 4), Vector(0, 0, -1));
+  Hit hit(Vector(0, 0, 4), Vector(0, 0, -1));
 
   requireColoursEqual(first.material().shade(ray, hit, light), Colour(1, 1, 0));
   requireColoursEqual(second.material().shade(ray, hit, light), Colour(1, 1, 0));
