@@ -2,6 +2,8 @@
 
 #include <optional>
 
+#include "raytracer/material/material.hpp"
+
 namespace raytracer {
 
 Camera::Camera(const Vector& position, double screenWidth)
@@ -32,21 +34,24 @@ Ray Camera::rayThroughPixel(unsigned int column, unsigned int row, unsigned int 
   return Ray(_position, direction);
 }
 
-void Camera::render(const Sphere& sphere, const Light& light, Image& image) const {
-  for (unsigned int row = 0; row < image.height(); ++row) {
-    for (unsigned int column = 0; column < image.width(); ++column) {
-      Ray ray = rayThroughPixel(column, row, image.width(), image.height());
-      image.setPixel(column, row, trace(ray, sphere, light));
+Image Camera::render(const Scene& scene, unsigned int imageWidth, unsigned int imageHeight) const {
+  Image image(imageWidth, imageHeight);
+  for (unsigned int row = 0; row < imageHeight; ++row) {
+    for (unsigned int column = 0; column < imageWidth; ++column) {
+      Ray ray = rayThroughPixel(column, row, imageWidth, imageHeight);
+      image.setPixel(column, row, trace(ray, scene));
     }
   }
+  return image;
 }
 
-Colour Camera::trace(const Ray& ray, const Sphere& sphere, const Light& light) const {
-  std::optional<Hit> hit = sphere.hit(ray);
+Colour Camera::trace(const Ray& ray, const Scene& scene) const {
+  std::optional<Hit> hit = scene.nearestHit(ray);
   if (!hit.has_value()) {
     return Colour(0, 0, 0);
   }
-  return sphere.material().shade(ray, *hit, light);
+
+  return hit->material().shade(ray, *hit, scene.toLight());
 }
 
 }  // namespace raytracer

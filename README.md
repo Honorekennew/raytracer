@@ -165,7 +165,7 @@ ctest --preset sanitize
 ```text
 .devcontainer/      Dockerfile and devcontainer.json (the shared environment)
 .github/            CI workflow, pull request template, issue templates
-include/raytracer/  Public headers, one folder per concept (colour/, geometry/, io/, light/, material/, math/, render/)
+include/raytracer/  Public headers, one folder per concept (colour/, geometry/, io/, material/, math/, render/, scene/)
 src/                Library sources, one folder per concept, and the executable (main.cpp)
 tests/              Catch2 tests, one folder per concept
 docs/adr/           Architecture decision records

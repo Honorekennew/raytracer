@@ -3,7 +3,7 @@
 #include "raytracer/colour/colour.hpp"
 #include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
-#include "raytracer/light/light.hpp"
+#include "raytracer/math/vector.hpp"
 
 namespace raytracer {
 
@@ -19,14 +19,15 @@ class Material {
   virtual ~Material() = default;
 
   // Returns the colour to draw where the "ray" hit the object, given what we know about the hit
-  // ("hit": the point and the normal) and the "light" that lights the scene.
+  // ("hit": the point and the normal) and the direction to the sun ("toLight": it starts at the
+  // hit point and points to the sun; its length does not matter, and the sun is white).
   //
   // The "= 0" makes the function "pure virtual": there is no code for it here, and every class
   // that inherits from Material must provide its own. Each material uses what it needs: a
-  // FlatShader uses none of the parameters, a LambertShader uses the hit and the light.
+  // FlatShader uses none of the parameters, a LambertShader uses the hit and toLight.
   //
   // All the parameters are "const &": a material reads them, it never changes them.
-  virtual Colour shade(const Ray& ray, const Hit& hit, const Light& light) const = 0;
+  virtual Colour shade(const Ray& ray, const Hit& hit, const Vector& toLight) const = 0;
 };
 
 }  // namespace raytracer

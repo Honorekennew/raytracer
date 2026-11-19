@@ -17,8 +17,8 @@ add_library(lodepng::lodepng ALIAS lodepng)
 target_include_directories(lodepng SYSTEM PUBLIC ${lodepng_SOURCE_DIR})
 
 # The library holds all the logic so that both the executable and the tests can use it.
-# Sources are grouped by concept: one folder per concept (colour/, geometry/, io/, light/,
-# material/, math/, render/).
+# Sources are grouped by concept: one folder per concept (colour/, geometry/, io/,
+# material/, math/, render/, scene/).
 add_library(raytracer_core
   colour/colour.cpp
   geometry/hit.cpp
@@ -26,7 +26,6 @@ add_library(raytracer_core
   geometry/ray.cpp
   geometry/sphere.cpp
   io/png_saver.cpp
-  light/light.cpp
   material/flat_shader.cpp
   material/lambert_shader.cpp
   math/vector.cpp

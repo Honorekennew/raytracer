@@ -4,7 +4,6 @@
 #include "raytracer/colour/colour.hpp"
 #include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
-#include "raytracer/light/light.hpp"
 #include "raytracer/material/flat_shader.hpp"
 #include "raytracer/math/vector.hpp"
 #include "test_helpers.hpp"
@@ -13,7 +12,6 @@ using Catch::Matchers::WithinAbs;
 using raytracer::Colour;
 using raytracer::FlatShader;
 using raytracer::Hit;
-using raytracer::Light;
 using raytracer::Ray;
 using raytracer::Vector;
 
@@ -27,8 +25,7 @@ TEST_CASE("Hit getters return t, point, normal and material", "[hit]") {
 
   // It is the material we gave, not a copy: shading with it gives its green.
   Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
-  Light light(Vector(0, 0, -5), Colour(1, 1, 1));
-  requireColoursEqual(hit.material().shade(ray, hit, light), Colour(0, 1, 0));
+  requireColoursEqual(hit.material().shade(ray, hit, Vector(0, 0, -5)), Colour(0, 1, 0));
 }
 
 // A Hit can be copied and put in a std::optional, which is what the shapes return.

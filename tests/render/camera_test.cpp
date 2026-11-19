@@ -2,16 +2,18 @@
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 #include <memory>
+#include <utility>
 
 #include "raytracer/colour/colour.hpp"
+#include "raytracer/geometry/plane.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/geometry/sphere.hpp"
-#include "raytracer/light/light.hpp"
 #include "raytracer/material/flat_shader.hpp"
 #include "raytracer/material/lambert_shader.hpp"
 #include "raytracer/math/vector.hpp"
 #include "raytracer/render/camera.hpp"
 #include "raytracer/render/image.hpp"
+#include "raytracer/scene/scene.hpp"
 #include "test_helpers.hpp"
 
 using Catch::Matchers::WithinAbs;
@@ -20,8 +22,9 @@ using raytracer::Colour;
 using raytracer::FlatShader;
 using raytracer::Image;
 using raytracer::LambertShader;
-using raytracer::Light;
+using raytracer::Plane;
 using raytracer::Ray;
+using raytracer::Scene;
 using raytracer::Sphere;
 using raytracer::Vector;
 
@@ -32,8 +35,15 @@ Sphere flatSphere(const Vector& center, double radius, const Colour& colour) {
   return Sphere(center, radius, std::make_shared<FlatShader>(colour));
 }
 
-// A white light in front of the camera. It does not change the flat spheres.
-Light whiteLight() { return Light(Vector(0, 0, -5), Colour(1, 1, 1)); }
+// The direction towards the sun for the tests where the light does not matter (flat spheres).
+const Vector anySun(0, 0, -5);
+
+// A scene lit from "toLight", with this one sphere in it.
+Scene sceneOf(const Vector& toLight, Sphere sphere) {
+  Scene scene(toLight);
+  scene.add(std::make_unique<Sphere>(std::move(sphere)));
+  return scene;
+}
 
 }  // namespace
 
@@ -185,10 +195,9 @@ TEST_CASE("Ray through pixels of a 512 x 256 image on a screen 2 wide", "[camera
 //     of the sphere, more than the radius: miss. So do all the others.
 TEST_CASE("Camera render paints only the middle pixel for a small sphere", "[camera]") {
   Camera camera(Vector(0, 0, -1), 3);
-  Sphere sphere = flatSphere(Vector(0, 0, 1), 1, Colour(1, 0, 0));
-  Image image(3, 3);
+  Scene scene = sceneOf(anySun, flatSphere(Vector(0, 0, 1), 1, Colour(1, 0, 0)));
 
-  camera.render(sphere, whiteLight(), image);
+  Image image = camera.render(scene, 3, 3);
 
   for (unsigned int row = 0; row < 3; ++row) {
     for (unsigned int column = 0; column < 3; ++column) {
@@ -204,10 +213,9 @@ TEST_CASE("Camera render paints only the middle pixel for a small sphere", "[cam
 // farthest, at (0.4, 0.4), is at 0.566), and the pixels of the border are outside (at 0.8).
 TEST_CASE("Camera render paints the pixels in front of the sphere", "[camera]") {
   Camera camera(Vector(0, 0, -1), 2);
-  Sphere sphere = flatSphere(Vector(0, 0, 9), 5, Colour(1, 0, 0));
-  Image image(5, 5);
+  Scene scene = sceneOf(anySun, flatSphere(Vector(0, 0, 9), 5, Colour(1, 0, 0)));
 
-  camera.render(sphere, whiteLight(), image);
+  Image image = camera.render(scene, 5, 5);
 
   for (unsigned int row = 0; row < 5; ++row) {
     for (unsigned int column = 0; column < 5; ++column) {
@@ -217,26 +225,13 @@ TEST_CASE("Camera render paints the pixels in front of the sphere", "[camera]") 
   }
 }
 
-// Every pixel is written, also the ones that miss: render does not rely on the image being black.
-TEST_CASE("Camera render paints the missed pixels black", "[camera]") {
-  Camera camera(Vector(0, 0, -1), 3);
-  Sphere sphere = flatSphere(Vector(0, 0, 1), 1, Colour(1, 0, 0));
-  Image image(3, 3);
-  image.setPixel(0, 0, Colour(0, 1, 0));
-
-  camera.render(sphere, whiteLight(), image);
-
-  requireColoursEqual(image.pixel(0, 0), Colour(0, 0, 0));
-}
-
 // The pixels that show the sphere get the colour given by the material of the sphere: here a
 // yellow FlatShader.
 TEST_CASE("Camera render uses the material of the sphere", "[camera]") {
   Camera camera(Vector(0, 0, -1), 3);
-  Sphere sphere = flatSphere(Vector(0, 0, 1), 1, Colour(1, 1, 0));
-  Image image(3, 3);
+  Scene scene = sceneOf(anySun, flatSphere(Vector(0, 0, 1), 1, Colour(1, 1, 0)));
 
-  camera.render(sphere, whiteLight(), image);
+  Image image = camera.render(scene, 3, 3);
 
   requireColoursEqual(image.pixel(1, 1), Colour(1, 1, 0));
 }
@@ -245,31 +240,64 @@ TEST_CASE("Camera render uses the material of the sphere", "[camera]") {
 // through the middle pixel of a 3 x 3 image. The ray (0, 0, -1) + t * (0, 0, 1) hits the sphere at
 // (0, 0, 0), where the normal is (0, 0, -1): the surface faces the camera.
 //
-// The light at (3, 0, -4) is in front of the sphere: its direction from the hit point is
+// The scene's toLight is (3, 0, -4): the sun is in front of the sphere. Its direction
 // (3, 0, -4) / 5 = (0.6, 0, -0.8), and the dot product with the normal is 0.8.
-TEST_CASE("Camera render gives the light to the material of the sphere", "[camera]") {
+TEST_CASE("Camera render gives the sun of the scene to the material of the sphere", "[camera]") {
   Camera camera(Vector(0, 0, -1), 3);
-  Sphere sphere(Vector(0, 0, 1), 1, std::make_shared<LambertShader>(Colour(1, 0.5, 0.25)));
-  Light light(Vector(3, 0, -4), Colour(1, 1, 1));
-  Image image(3, 3);
+  Scene scene = sceneOf(Vector(3, 0, -4), Sphere(Vector(0, 0, 1), 1,
+                        std::make_shared<LambertShader>(Colour(1, 0.5, 0.25))));
 
-  camera.render(sphere, light, image);
+  Image image = camera.render(scene, 3, 3);
 
   requireColoursEqual(image.pixel(1, 1), Colour(0.8, 0.4, 0.2));
 }
 
-// The same sphere with the light behind it, at (0, 0, 5): the side that faces the camera gets no
-// light, so the pixel is black although the sphere is hit.
-TEST_CASE("Camera render leaves the side away from the light dark", "[camera]") {
+// The same sphere with the sun behind it (toLight is (0, 0, 5)): the side that faces the camera
+// gets no light, so the pixel is black although the sphere is hit.
+TEST_CASE("Camera render leaves the side away from the sun dark", "[camera]") {
   Camera camera(Vector(0, 0, -1), 3);
-  Sphere sphere(Vector(0, 0, 1), 1, std::make_shared<LambertShader>(Colour(1, 1, 0)));
-  Light light(Vector(0, 0, 5), Colour(1, 1, 1));
-  Image image(3, 3);
-  image.setPixel(1, 1, Colour(0, 1, 0));
+  Scene scene = sceneOf(Vector(0, 0, 5), Sphere(Vector(0, 0, 1), 1,
+                        std::make_shared<LambertShader>(Colour(1, 1, 0))));
 
-  camera.render(sphere, light, image);
+  Image image = camera.render(scene, 3, 3);
 
   requireColoursEqual(image.pixel(1, 1), Colour(0, 0, 0));
+}
+
+// With two shapes, a pixel shows the nearest. The camera is at (0, 0, -1) and the blue plane
+// through (0, 0, -0.5) faces it. Every ray of the 3 x 3 image reaches the plane at t = 0.5, long
+// before the red sphere of centre (0, 0, 1) (t = 1 for the middle pixel): all the pixels are blue.
+TEST_CASE("Camera render shows a plane in front of the sphere", "[camera]") {
+  Camera camera(Vector(0, 0, -1), 3);
+  Scene scene = sceneOf(anySun, flatSphere(Vector(0, 0, 1), 1, Colour(1, 0, 0)));
+  scene.add(std::make_unique<Plane>(Vector(0, 0, -0.5), Vector(0, 0, -1),
+                                    std::make_shared<FlatShader>(Colour(0, 0, 1))));
+
+  Image image = camera.render(scene, 3, 3);
+
+  for (unsigned int row = 0; row < 3; ++row) {
+    for (unsigned int column = 0; column < 3; ++column) {
+      requireColoursEqual(image.pixel(column, row), Colour(0, 0, 1));
+    }
+  }
+}
+
+// The same plane, now through (0, 0, 5), behind the sphere: the middle pixel shows the sphere
+// (t = 1, before the plane at t = 6), and the other pixels miss the sphere and show the plane.
+TEST_CASE("Camera render shows a plane behind the sphere", "[camera]") {
+  Camera camera(Vector(0, 0, -1), 3);
+  Scene scene = sceneOf(anySun, flatSphere(Vector(0, 0, 1), 1, Colour(1, 0, 0)));
+  scene.add(std::make_unique<Plane>(Vector(0, 0, 5), Vector(0, 0, -1),
+                                    std::make_shared<FlatShader>(Colour(0, 0, 1))));
+
+  Image image = camera.render(scene, 3, 3);
+
+  for (unsigned int row = 0; row < 3; ++row) {
+    for (unsigned int column = 0; column < 3; ++column) {
+      bool isMiddle = column == 1 && row == 1;
+      requireColoursEqual(image.pixel(column, row), isMiddle ? Colour(1, 0, 0) : Colour(0, 0, 1));
+    }
+  }
 }
 
 // The top right pixel of a 512 x 256 image on a screen 2 wide: a pixel is 2 / 512 = 1 / 256 wide.

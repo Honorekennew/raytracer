@@ -8,7 +8,6 @@
 #include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/geometry/sphere.hpp"
-#include "raytracer/light/light.hpp"
 #include "raytracer/material/flat_shader.hpp"
 #include "raytracer/math/vector.hpp"
 #include "test_helpers.hpp"
@@ -17,7 +16,6 @@ using Catch::Matchers::WithinAbs;
 using raytracer::Colour;
 using raytracer::FlatShader;
 using raytracer::Hit;
-using raytracer::Light;
 using raytracer::Ray;
 using raytracer::Sphere;
 using raytracer::Vector;
@@ -78,12 +76,11 @@ TEST_CASE("Sphere at (5,0,9) radius 5: getters and ray hit (edge)", "[sphere]") 
 // The sphere keeps the material it was given, and the material decides the colour.
 TEST_CASE("Sphere keeps the material it was created with", "[sphere]") {
   Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
-  Light light(Vector(0, 0, -5), Colour(1, 1, 1));
   Sphere sphere = flatSphere(Vector(0, 0, 9), 5, Colour(1, 1, 0));
   auto hit = sphere.hit(ray);
   REQUIRE(hit.has_value());
 
-  requireColoursEqual(sphere.material().shade(ray, *hit, light), Colour(1, 1, 0));
+  requireColoursEqual(sphere.material().shade(ray, *hit, Vector(0, 0, -5)), Colour(1, 1, 0));
 }
 
 // Several spheres can share one material.
@@ -92,11 +89,11 @@ TEST_CASE("Two spheres can share the same material", "[sphere]") {
   Sphere first(Vector(0, 0, 9), 5, yellow);
   Sphere second(Vector(10, 0, 9), 1, yellow);
   Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
-  Light light(Vector(0, 0, -5), Colour(1, 1, 1));
   Hit hit(5, Vector(0, 0, 4), Vector(0, 0, -1), *yellow);
+  Vector toLight(0, 0, -5);
 
-  requireColoursEqual(first.material().shade(ray, hit, light), Colour(1, 1, 0));
-  requireColoursEqual(second.material().shade(ray, hit, light), Colour(1, 1, 0));
+  requireColoursEqual(first.material().shade(ray, hit, toLight), Colour(1, 1, 0));
+  requireColoursEqual(second.material().shade(ray, hit, toLight), Colour(1, 1, 0));
 }
 
 // hit() also says WHERE the ray hits and how the surface is turned there. The ray (0, 0, -1) +

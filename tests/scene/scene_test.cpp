@@ -8,7 +8,6 @@
 #include "raytracer/geometry/plane.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/geometry/sphere.hpp"
-#include "raytracer/light/light.hpp"
 #include "raytracer/material/flat_shader.hpp"
 #include "raytracer/math/vector.hpp"
 #include "raytracer/scene/scene.hpp"
@@ -18,7 +17,6 @@ using Catch::Matchers::WithinAbs;
 using raytracer::Colour;
 using raytracer::FlatShader;
 using raytracer::Hit;
-using raytracer::Light;
 using raytracer::Plane;
 using raytracer::Ray;
 using raytracer::Scene;
@@ -45,10 +43,9 @@ std::unique_ptr<Plane> bluePlaneAt(double z) {
 }
 
 // The colour that the material of the hit gives. The material is a FlatShader, so the ray and the
-// light make no difference: only its colour counts.
+// sun make no difference: only its colour counts.
 Colour colourOf(const Hit& hit) {
-  Light light(Vector(0, 0, -5), Colour(1, 1, 1));
-  return hit.material().shade(cameraRay(), hit, light);
+  return hit.material().shade(cameraRay(), hit, Vector(0, 0, -5));
 }
 
 }  // namespace

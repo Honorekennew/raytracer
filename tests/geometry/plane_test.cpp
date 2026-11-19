@@ -7,7 +7,6 @@
 #include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/plane.hpp"
 #include "raytracer/geometry/ray.hpp"
-#include "raytracer/light/light.hpp"
 #include "raytracer/material/flat_shader.hpp"
 #include "raytracer/math/vector.hpp"
 #include "test_helpers.hpp"
@@ -15,7 +14,6 @@
 using Catch::Matchers::WithinAbs;
 using raytracer::Colour;
 using raytracer::FlatShader;
-using raytracer::Light;
 using raytracer::Plane;
 using raytracer::Ray;
 using raytracer::Vector;
@@ -49,8 +47,7 @@ TEST_CASE("Plane: the ray (0,8,0) + t * (3,-4,0) hits the floor at t = 2", "[pla
 
   // The material of the plane is green, and the hit carries it.
   REQUIRE(&hit->material() == &plane.material());
-  Light light(Vector(0, 10, 0), Colour(1, 1, 1));
-  requireColoursEqual(hit->material().shade(ray, *hit, light), Colour(0, 1, 0));
+  requireColoursEqual(hit->material().shade(ray, *hit, Vector(0, 10, 0)), Colour(0, 1, 0));
 }
 
 // The line 3x + 4y = 24 (in 3D, the plane that contains it and the z axis). It goes through

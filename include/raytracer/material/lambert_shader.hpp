@@ -3,8 +3,8 @@
 #include "raytracer/colour/colour.hpp"
 #include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
-#include "raytracer/light/light.hpp"
 #include "raytracer/material/material.hpp"
+#include "raytracer/math/vector.hpp"
 
 namespace raytracer {
 
@@ -18,10 +18,11 @@ class LambertShader : public Material {
   // Creates a material whose surface has the given "colour" when the light faces it.
   explicit LambertShader(const Colour& colour);
 
-  // Returns the colour of the surface multiplied by the colour of the light and by the
-  // brightness. The brightness is never below 0: a surface turned away from the light is black,
-  // not "darker than black". The ray is not used.
-  Colour shade(const Ray& ray, const Hit& hit, const Light& light) const override;
+  // Returns the colour of the surface multiplied by the brightness (the light is white). The
+  // brightness is never below 0: a surface turned away from the light is black, not "darker than
+  // black". If "toLight" has no length, it has no direction: the result is black. The ray is not
+  // used.
+  Colour shade(const Ray& ray, const Hit& hit, const Vector& toLight) const override;
 
  private:
   Colour _colour;
