@@ -35,7 +35,7 @@ the `ImageSaver` interface (see `include/raytracer/io/`).
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 

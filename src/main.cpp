@@ -51,6 +51,11 @@ int main() {
   const unsigned int imageHeight = 512;
   raytracer::Image image = camera.render(scene, imageWidth, imageHeight);
 
-  // Save the rendered image to a file
-  return save(image, "output.png") ? 0 : 1;
+  // Save the rendered image to a file, and say where it is
+  const std::string path = "image.png";
+  if (!save(image, path)) {
+    return 1;
+  }
+  std::cout << path << '\n';
+  return 0;
 }

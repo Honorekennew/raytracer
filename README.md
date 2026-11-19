@@ -3,9 +3,11 @@
 Ray tracer for a film studio, written in C++20.
 
 Discovery notes: [`docs/discovery/discovery-report.md`](docs/discovery/discovery-report.md).
+Domain model: [`docs/domain/domain-model.md`](docs/domain/domain-model.md).
 
-At this stage the project is only a **bootstrapped C++ skeleton**: a build system, a Hello World
-program and a test framework. There is no ray tracing code yet.
+The program renders a red ball lit by the sun, on a grey floor, and saves it as `image.png`. The
+ray tracer traces one ray per pixel through a `Scene` (a sun and a list of shapes: a `Sphere` and a
+`Plane` for now), shades the nearest hit with Lambert's law and writes the image with LodePNG.
 
 ## Build strategy
 
@@ -62,7 +64,7 @@ support `&&`.
 ```sh
 cmake --preset debug             # configure (once, or when CMake files change)
 cmake --build --preset debug     # compile
-./build/debug/src/raytracer      # prints nothing, writes output.png
+./build/debug/src/raytracer      # prints image.png, and writes image.png: a red ball on a grey floor
 ```
 
 ### 3. Run the tests
@@ -74,7 +76,7 @@ ctest --preset debug
 Expected result:
 
 ```text
-100% tests passed, 0 tests failed out of 2
+100% tests passed, 0 tests failed out of <number of tests>
 ```
 
 ### Shortcuts

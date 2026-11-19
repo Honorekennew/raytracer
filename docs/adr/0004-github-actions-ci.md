@@ -29,7 +29,7 @@ and the workflow only has read access to the repository.
 
 ## Status
 
-Proposed
+Accepted
 
 ## Consequences
 
