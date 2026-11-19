@@ -18,15 +18,20 @@ using raytracer::PngSaver;
 
 namespace {
 
-// A path in the temporary folder. The file is deleted when the test ends, even if it fails.
+// A path in the folder where the tests run (the build folder), not in the shared temporary folder
+// of the machine, where other users could replace the file. The file is deleted when the test ends,
+// even if it fails.
 class TempFile {
  public:
-  explicit TempFile(const std::string& name)
-      : _path(std::filesystem::temp_directory_path() / name) {}
+  explicit TempFile(const std::string& name) : _path(name) {}
   ~TempFile() {
     std::error_code ignored;
     std::filesystem::remove(_path, ignored);
   }
+
+  // The object owns the file: a copy would delete it a second time.
+  TempFile(const TempFile&) = delete;
+  TempFile& operator=(const TempFile&) = delete;
   std::string path() const { return _path.string(); }
 
  private:
@@ -111,8 +116,7 @@ TEST_CASE("PngSaver overwrites an existing file", "[png_saver]") {
 
 TEST_CASE("PngSaver throws when the file can't be written", "[png_saver]") {
   Image image(1, 1);
-  std::filesystem::path path =
-      std::filesystem::temp_directory_path() / "raytracer_no_such_folder" / "image.png";
+  std::filesystem::path path = std::filesystem::path("raytracer_no_such_folder") / "image.png";
   PngSaver saver;
 
   REQUIRE_THROWS_AS(saver.save(image, path.string()), std::runtime_error);
