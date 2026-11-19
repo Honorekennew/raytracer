@@ -26,7 +26,7 @@ std::optional<Hit> Plane::hit(const Ray& ray) const {
     return std::nullopt;
   }
 
-  return Hit(ray.origin() + t * ray.direction(), _normal);
+  return Hit(t, ray.at(t), _normal, *_material);
 }
 
 }  // namespace raytracer

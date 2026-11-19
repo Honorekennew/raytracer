@@ -8,4 +8,6 @@ const Vector& Ray::origin() const { return _origin; }
 
 const Vector& Ray::direction() const { return _direction; }
 
+Vector Ray::at(double t) const { return _origin + t * _direction; }
+
 }  // namespace raytracer

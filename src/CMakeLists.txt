@@ -31,7 +31,8 @@ add_library(raytracer_core
   material/lambert_shader.cpp
   math/vector.cpp
   render/camera.cpp
-  render/image.cpp)
+  render/image.cpp
+  scene/scene.cpp)
 add_library(raytracer::core ALIAS raytracer_core)
 
 target_include_directories(raytracer_core PUBLIC

@@ -4,12 +4,14 @@
 #include "raytracer/geometry/hit.hpp"
 #include "raytracer/geometry/ray.hpp"
 #include "raytracer/light/light.hpp"
+#include "raytracer/material/flat_shader.hpp"
 #include "raytracer/material/lambert_shader.hpp"
 #include "raytracer/material/material.hpp"
 #include "raytracer/math/vector.hpp"
 #include "test_helpers.hpp"
 
 using raytracer::Colour;
+using raytracer::FlatShader;
 using raytracer::Hit;
 using raytracer::LambertShader;
 using raytracer::Light;
@@ -23,8 +25,11 @@ using raytracer::Vector;
 // Most tests look at the point (0, 0, 0) of a surface that faces +Z: its normal is (0, 0, 1).
 namespace {
 
+// A Hit needs a material. The shader under test doesn't read it, so any one will do.
+const FlatShader hitMaterial(Colour(1, 1, 1));
+
 const Ray anyRay(Vector(0, 0, 10), Vector(0, 0, -1));
-const Hit faceUp(Vector(0, 0, 0), Vector(0, 0, 1));
+const Hit faceUp(10, Vector(0, 0, 0), Vector(0, 0, 1), hitMaterial);
 const Colour white(1, 1, 1);
 
 }  // namespace
@@ -80,7 +85,7 @@ TEST_CASE("LambertShader gives black when the light is behind the surface", "[ma
 // from the origin, the light would be above.)
 TEST_CASE("LambertShader looks at the light from the hit point", "[material]") {
   LambertShader shader(Colour(1, 1, 0));
-  Hit high(Vector(0, 0, 10), Vector(0, 0, 1));
+  Hit high(0, Vector(0, 0, 10), Vector(0, 0, 1), hitMaterial);
   Light light(Vector(0, 0, 5), white);
 
   requireColoursEqual(shader.shade(anyRay, high, light), Colour(0, 0, 0));

@@ -31,6 +31,7 @@ add_executable(raytracer_tests
   math/vector_test.cpp
   render/camera_test.cpp
   render/image_test.cpp
+  scene/scene_test.cpp
   sanity_test.cpp)
 # Lets every test file write #include "test_helpers.hpp".
 target_include_directories(raytracer_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

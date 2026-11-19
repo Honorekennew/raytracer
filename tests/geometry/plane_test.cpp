@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 #include <memory>
 
@@ -11,6 +12,7 @@
 #include "raytracer/math/vector.hpp"
 #include "test_helpers.hpp"
 
+using Catch::Matchers::WithinAbs;
 using raytracer::Colour;
 using raytracer::FlatShader;
 using raytracer::Light;
@@ -41,12 +43,14 @@ TEST_CASE("Plane: the ray (0,8,0) + t * (3,-4,0) hits the floor at t = 2", "[pla
   auto hit = plane.hit(ray);
 
   REQUIRE(hit.has_value());
+  REQUIRE_THAT(hit->t(), WithinAbs(2, tolerance));
   requireVectorsEqual(hit->point(), Vector(6, 0, 0));
   requireVectorsEqual(hit->normal(), Vector(0, 1, 0));
 
-  // The material of the plane is green.
+  // The material of the plane is green, and the hit carries it.
+  REQUIRE(&hit->material() == &plane.material());
   Light light(Vector(0, 10, 0), Colour(1, 1, 1));
-  requireColoursEqual(plane.material().shade(ray, *hit, light), Colour(0, 1, 0));
+  requireColoursEqual(hit->material().shade(ray, *hit, light), Colour(0, 1, 0));
 }
 
 // The line 3x + 4y = 24 (in 3D, the plane that contains it and the z axis). It goes through
@@ -62,6 +66,7 @@ TEST_CASE("Plane: the ray (-8,0,0) + t * (4,3,0) hits the line 3x + 4y = 24 at t
   auto hit = plane.hit(ray);
 
   REQUIRE(hit.has_value());
+  REQUIRE_THAT(hit->t(), WithinAbs(2, tolerance));
   requireVectorsEqual(hit->point(), Vector(0, 6, 0));
   requireVectorsEqual(hit->normal(), Vector(0.6, 0.8, 0));
 }

@@ -61,9 +61,9 @@ std::optional<Hit> Sphere::hit(const Ray& ray) const {
   }
 
   // The point of the ray at "t", and the normal: from the center to that point, made 1 long.
-  Vector point = ray.origin() + *t * ray.direction();
+  Vector point = ray.at(*t);
   Vector normal = (point - _center).normalised();
-  return Hit(point, normal);
+  return Hit(*t, point, normal, *_material);
 }
 
 }  // namespace raytracer

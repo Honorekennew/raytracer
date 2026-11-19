@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 #include <memory>
 #include <stdexcept>
@@ -12,6 +13,7 @@
 #include "raytracer/math/vector.hpp"
 #include "test_helpers.hpp"
 
+using Catch::Matchers::WithinAbs;
 using raytracer::Colour;
 using raytracer::FlatShader;
 using raytracer::Hit;
@@ -91,7 +93,7 @@ TEST_CASE("Two spheres can share the same material", "[sphere]") {
   Sphere second(Vector(10, 0, 9), 1, yellow);
   Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
   Light light(Vector(0, 0, -5), Colour(1, 1, 1));
-  Hit hit(Vector(0, 0, 4), Vector(0, 0, -1));
+  Hit hit(5, Vector(0, 0, 4), Vector(0, 0, -1), *yellow);
 
   requireColoursEqual(first.material().shade(ray, hit, light), Colour(1, 1, 0));
   requireColoursEqual(second.material().shade(ray, hit, light), Colour(1, 1, 0));
@@ -108,8 +110,20 @@ TEST_CASE("Sphere hit gives the point and the normal of the first hit", "[sphere
   auto hit = sphere.hit(ray);
 
   REQUIRE(hit.has_value());
+  REQUIRE_THAT(hit->t(), WithinAbs(5, tolerance));
   requireVectorsEqual(hit->point(), Vector(0, 0, 4));
   requireVectorsEqual(hit->normal(), Vector(0, 0, -1));
+}
+
+// The hit carries the material of the sphere that was hit: the very same object.
+TEST_CASE("Sphere hit carries the material of the sphere", "[sphere]") {
+  Ray ray(Vector(0, 0, -1), Vector(0, 0, 1));
+  Sphere sphere = flatSphere(Vector(0, 0, 9), 5, Colour(1, 0, 0));
+
+  auto hit = sphere.hit(ray);
+
+  REQUIRE(hit.has_value());
+  REQUIRE(&hit->material() == &sphere.material());
 }
 
 // The direction of a ray does not have to be 1 long: (0, 0, 2) reaches the same point at t = 2.5.
@@ -120,6 +134,7 @@ TEST_CASE("Sphere hit does not depend on the length of the ray direction", "[sph
   auto hit = sphere.hit(ray);
 
   REQUIRE(hit.has_value());
+  REQUIRE_THAT(hit->t(), WithinAbs(2.5, tolerance));
   requireVectorsEqual(hit->point(), Vector(0, 0, 4));
   requireVectorsEqual(hit->normal(), Vector(0, 0, -1));
 }

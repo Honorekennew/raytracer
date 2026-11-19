@@ -16,6 +16,10 @@ class Ray {
   const Vector& origin() const;
   const Vector& direction() const;
 
+  // Returns the point of the ray at "t": origin + t * direction. At t = 0 it is the origin, and
+  // a negative t is behind the origin. Written once here, the shapes use it to find their hit.
+  Vector at(double t) const;
+
  private:
   Vector _origin;
   Vector _direction;
